@@ -4,6 +4,6 @@ Resources from the paper: Utilization of Support Vector Machines in Detecting Ph
 Includes:
 * Dataset (csv file)
 * Python script for feature extraction
-
-TODO:
-* Include Python notebook for exploratory data analysis and model development/training
+* Jupyter Notebook File
+* .pkl of the best (tuned) model
+* Divided datasets (train/validation/test)
