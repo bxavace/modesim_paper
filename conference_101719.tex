@@ -1,0 +1,494 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{booktabs}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+\title{Utilization of Support Vector Machines in Detecting Philippine Smishing Attacks}
+
+\author{\IEEEauthorblockN{Brylle Ace M. Nuñez}
+\IEEEauthorblockA{
+\textit{Asia Pacific College}\\
+Makati City, Philippines \\
+bmnunez2@student.apc.edu.ph}
+\and
+\IEEEauthorblockN{Edwin Jr. D. Gumba}
+\IEEEauthorblockA{
+\textit{Asia Pacific College}\\
+Makati City, Philippines \\
+edgumba@student.apc.edu.ph}
+\and
+\IEEEauthorblockN{Kyle Philippe M. Santos}
+\IEEEauthorblockA{
+\textit{Asia Pacific College}\\
+Makati City, Philippines \\
+kpsantos@student.apc.edu.ph}
+}
+
+\maketitle
+
+\begin{abstract}
+    Smishing, a prevalent cybersecurity threat, continues to target smartphone users by sending malicious SMS messages containing website URLs, phone numbers, or email addresses. To address this issue, this study proposes a novel approach to smishing detection that combines the power of Support Vector Machines (SVM). To achieve this, we extract key linguistic and structural features from SMS messages and utilize SVMs to classify smishing messages with high accuracy. The key contributions of the study include the development of a novel smishing detection model using SVMs, and an extensive analysis of the model's performance in the Philippine context. 
+\end{abstract}
+
+\begin{IEEEkeywords}
+support vector machines, smishing, scam text, phishing, supervised learning, classification
+\end{IEEEkeywords}
+
+\section{Introduction}
+
+The modern digital era paved the way for recent technological advancements, one of which is the creation of smartphones and instant messaging applications. These innovations revolutionized communication, making people spread information from one place to another with the simple click of a button. As the use of smartphones and as the use of SMS messaging has grown rampant, the rise of new dangers that make users susceptible has also risen, an example of which is smishing attacks.
+
+In the context of cyber security, smishing is a type of phishing attack conducted through SMS to lure users into providing sensitive information by redirecting them to fake websites or applications. Smishing is a phishing-related assault that poses a significant danger to smartphone security. As the name implies, fraudsters carry out this attack by sending malicious SMS messages to smartphone users. According to a personal finance survey done in the Philippines during the fourth quarter of 2023 \cite{statista2023}, phishing assaults targeted half of those who had suffered digital fraud attempts. In addition, 42 percent of respondents were targeted with smishing or phishing via text message. These SMS messages contain information that leads to the attacker, such as website URLs, phone numbers, or email addresses \cite{mazri2023}. Through these approaches, attackers can gain access to sensitive or personal information such as logins, bank data, credit card numbers, and more.
+
+By recognizing the behavioral message patterns these messages are usually sent, this study aims to contribute to analyzing and providing a more comprehensive understanding of the analyzation and prevention of smishing attacks. The urgency of the research is shown by the need for effective and preventive measures for users who are especially prone to these attacks, particularly in the age where SMS messaging and exchange of information is at its rampant and most rapid state. By fulfilling the objectives that will be stated, the researchers can gauge and recommend ways how to effectively implement these findings into current smishing detection models.
+
+To address this issue, this study proposes a novel approach to smishing detection that combines the power of Support Vector Machines (SVM). Text classification for identifying phishing messages has been approached through various methods, none of which can be definitively deemed right or wrong. Over time, discernible trends have surfaced, influenced by the perspectives of notable researchers, funding opportunities, and the evolution of available computer hardware. In fact, current text classification methods for detecting phishing messages have limitations, like requiring large datasets or complex models \cite{thakur2023}. While deep learning and unsupervised methods have shown promise for text classification tasks like phishing detection, SVMs remain a solid baseline choice. SVMs are simple to train and interpret, tend to generalize well even with limited data, and have been successfully applied to phishing detection in past research. Additionally, deep neural networks typically require substantial data and compute resources to train effectively. Given the project's computing resources and dataset constraints, an SVM strikes the right balance between classification performance and feasibility to implement.
+
+% The proposed model holds national significance for various stakeholders. Security professionals stand to benefit from enhanced defenses against phishing attacks in SMS transactions, particularly through the effective use of SVMs and machine learning techniques. Telecommunication companies like Globe and TNT can utilize the model's insights to protect customers from smishing attacks, safeguarding their revenue streams. Both government and private sectors, as well as individual consumers, will benefit from improved data and communication security should the model be incorporated in modern texting applications.
+
+The study's results aims to address Sustainable Development Goal 9, focusing on industry, innovation, and infrastructure, supporting the Philippines in addressing smishing attacks and enhancing industry protection. Smishing attacks threaten industries which rely on SMS messaging by exploiting vulnerabilities in telecommunication networks. By leveraging innovations in machine learning and artificial intelligence for advanced threat detection, the SVM model empowers defensive infrastructure and strengthens industry protections against emerging fraud tactics. Implementing this technology across SMS-based applications would foster a more secure SMS channel, safeguarding institutions and innovation against evolving cybercriminal schemes. Moreover, researching SMS defenses drives technological advancement and develops local AI talent. The model has the potential to be integrated into mobile applications or network defenses nationwide, supporting the growth of robust digital infrastructure.
+
+Additionally, it also aims to address SDG 16, contributing to peace, justice, and strong institutions by improving messaging security, safeguarding privacy, and preventing individuals and organizations from falling victim to phishing attacks. By developing and training a model, we give further insights on how to battle smishing attempts and to lessen cases of scamming, phishing, and identity theft, ultimately leading to peaceful community. Finally, the results of this study also supports the National Innovation Agenda and Strategy Document by providing novel countermeasures against smishing, contributing to innovation infrastructure policies, as well as collaborative and reliable institutions policies specifically security and defense.
+
+\section{Statement of the Problem}
+
+Smishing has become an escalating cybersecurity threat facing the Philippines. As the country with the highest SMS volume globally, it offers an ideal landscape for fraudsters carrying out smishing campaigns through text messages. These attacks trick mobile users into inputting private data on phony websites, enabling identity theft and financial fraud.
+
+According to statistics from the Philippine National Police Anti-Cybercrime Group (PNP ACG) \cite{cudis2021}\cite{villanueva2023}, smishing incidents \cite{stojnic2021} have risen by 37\% starting in 2020, likely driven by perpetrators taking advantage of citizens' financial vulnerabilities during the COVID-19 pandemic. The increase in smishing incidents led to the enactment of the Sim Card Registration Act of 2022 to counter smishing and easily identify attackers through attribution. Large telecom companies PLDT and Globe reported that they blocked more than a billion spam and malicious texts in less than a year. \cite{lisette2023} Despite the implementation of SIM card registration laws, smishing continues to intensify, with the PNP ACG citing the inability to track dynamic IP addresses as a critical limitation in apprehending attackers.
+
+Many researchers have worked and dwelled on detecting malicious messages. While traditional anti-spam filters employed keyword matching and blacklists offer a baseline defense, they struggle to keep pace with the evolving tactics of smishers. Worse, default messaging applications offered by Android and Apple often lack robust filtering mechanisms, leaving users vulnerable to smishing attempts. \cite{stojnic2021}
+
+A proposed method of detection is heuristic methods. Heuristic methods are the selection of some features and patterns from malicious text messages with the aid of classification algorithms, but the limitation is that it does not check URLs potentially missing harmful messages \cite{mishra2022}. Other researchers use blacklist methods. These check against known malicious sites but are ineffective due to infrequent updates and attackers' changing tactics. Attackers are changing the domain name of their websites more regularly. As a result, blacklists are unable to keep up with attackers' constantly shifting habits. \cite{mishra2020}
+
+These increasingly sophisticated scams necessitate more intelligent solutions. This is why, even though other recent studies use more complex methods like deep learning, the researchers have chosen to use SVMs because they are reliable and well-suited for our approach of manually selecting features and patterns. Even though SVMs are a simpler approach, they can still be very accurate at classifying parameters based on factors.
+
+The study aims to address this problem by leveraging the capabilities of SVMs to design and evaluate a comprehensive smishing detection model.
+
+Specifically, our research project aims to answer the following research questions: 
+
+\begin{enumerate}
+    \item What are the key linguistic and structural features that distinguish smishing messages from legitimate ones?
+    \item To what extent can Support Vector Machines (SVMs) effectively detect smishing messages compared to Logistic Regression?
+    \item How does the performance of SVMs for smishing detection compare when using different kernel functions (e.g. linear, polynomial, radial basis function)?
+\end{enumerate}
+
+\section{Objectives}
+
+The main objective of the research project is to utilize and assess the effectiveness the support vector machine in classifying smishing messages with high accuracy. Specifically, it aims to:
+
+\begin{enumerate}
+    \item To extract and identify the most effective features for smishing detection.
+    \item To develop a supervised learning model in the form of Support Vector Machines.
+    \item To evaluate the effectiveness of support vector machine compared to logistic regression in terms of its key metrics.
+\end{enumerate}
+
+\section{Scope and Limitations}
+
+The research project will focus on the development and evaluation of a supervised learning model from a collated dataset from the datasets of Mishra and Soni \cite{mishra2022} and Bwandowando \cite{bwandowando2023}. The output should be a working model of a support vector machine and a modified, collated, and labeled dataset from the combination of the following:
+
+\begin{enumerate}
+    \item SMS Phishing (Philippines) Dataset from \cite{bwandowando2023}
+    \item Authentic Dataset of SMS Texts from \cite{mishra2022}
+    \item Researchers' Personal SMS Messages
+\end{enumerate}
+
+The project only uses support vector machine and logistic regression models in its development and evaluation. As well, the project is constrained to the Philippine context. The model's performance in detecting smishing attacks in other regions or countries might vary due to language and cultural differences. Further, smishing attacks are constantly evolving, and new techniques may emerge during or after the completion of this study. The model's efficacy could be affected by novel attack strategies that it may not be equipped to detect. Accordingly, the study will not focus on the complexity of the linguistic features of the text messages. Finally, the performance and generalization capabilities of the developed model might be influenced by the quality and diversity of the training data. The model's effectiveness could be limited if it fails to generalize well to unseen or diverse smishing attacks.
+
+\section{Review of Related Literature}
+
+% \subsection*{SMS Texting in the Philippines}
+
+% A study by \cite{ignacio2021} analyzed the texting and chatting styles of Grade 11 students in the Philippines. They found that students frequently used onomatopoeic spelling and omitted apostrophes in text messages, while acronyms, initialisms, omitted apostrophes, and emoticons were common in their written outputs. Understanding the texting styles and common patterns used by students can inform the development of more effective smishing detection techniques that can identify malicious messages that attempt to steal personal information or spread malware. By considering the unique characteristics of Filipino textism, we can improve the accuracy and efficiency of our smishing detection system.
+
+% A study by \cite{caparas2017} explored the communicative aspects of multilingual code switching in computer-mediated communication (CMC) among Facebook users in Mindanao, Philippines. The study investigated the preferred codes, functions, and motives for code-switching (CS) in online communication. The findings revealed that Taglish, a blend of Tagalog and English, was the preferred code, suggesting its unifying and non-discriminatory nature. The primary reason for CS was real lexical need, but the study also identified additional reasons such as spontaneous expression, retention of native terminology, disappointment, and relationship promotion. These findings highlight the viability of regional languages to coexist with English and other languages in online interactions. Understanding the linguistic nuances of code-switching in CMC can provide valuable insights for feature engineering and model development, especially synthetic data generation. The findings of Caparas and Gustilo (2017) suggest that incorporating Taglish and other regional languages into the model's feature set may enhance its ability to detect smishing messages, which often exploit language manipulation techniques to deceive recipients. Additionally, understanding the communicative functions and motives for CS can aid in identifying patterns and anomalies in SMS text data, further improving the accuracy of smishing detection models.
+
+% A study by \cite{domingo2021} investigated the emerging language used in Facebook threads by college students, shedding light on how digital technology has influenced language patterns in computer-mediated communication. The study revealed that college students employ a mix of two or three languages in their Facebook threads and utilize linguistic features such as typographical practices, syntactic complexities, unique lexical choices, and emoticons. These findings suggest that college students readily adapt to language changes and shape language to suit their current social and technological context, driven by the desire for efficient communication and social acceptance. With this in mind, we can draw parallels between the evolving language patterns observed in Facebook threads and the unique linguistic features found in smishing messages. Both contexts involve the use of technology-mediated communication, where users adapt language to suit the platform and intended audience. Understanding these emerging language patterns and linguistic features can inform the development of more effective dataset for smishing messages, as they can provide valuable cues for distinguishing legitimate text messages from malicious ones.
+
+\subsection*{Smishing Cases}
+
+\cite{alqahtani2022}'s study conducts extensive analysis of phishing attacks and countermeasures during the COVID-19 pandemic. Reviewing and discussing 54 scientific studies from cybersecurity firms and governmental agencies, it was found that phishing is the most frequent attack during the pandemic. Several limitations like lack of reference datasets, simple and traditional use of algorithms and features, and inadequate use of state-of-the-art methods were found in the research. The study found that more research is needed to build and share resources for the community, such as larger datasets and evaluation campaigns. State-of-the-art techniques like in deep learning must be focused for phishing detection. Lessons learned from the attacks during the COVID-19 will be proven valuable for responding to increasing cybersecurity concerns each year.
+
+\subsection*{Classification Models}
+A study by \cite{mishra2021} presents DSmishSMS, a system designed to detect smishing SMS, this is due to limited information in SMS which is often abbreviated and symbolic. Challenges arise and as a result, the research addresses this by evaluating the legitimacy of URLs in messages and extracting efficient features from text content. It consists of two phases: Domain Checking Phase for scrutinizing URL authenticity, and SMS classification phase for feature extraction by using the backpropagation algorithm. Through evaluation using SMS datasets, 97.93\% accuracy is achieved, demonstrating its effectiveness in detecting smishing. The research contributes to the field by proposing a system leveraging URL legitimacy evaluation and efficient feature extraction from abbreviated text content. High accuracy achieved highlights the potential of the system from incoming smishing attacks.
+
+Another study in \cite{mambina2022} proposed a machine-learning model classifying Swahili smishing messages that targets mobile money users. With the model using the hybrid approaches of Extratree classifier feature  selection and Random Forest with TFIDF vectorization, the model achieved an accuracy of 99.86\%. The study highlights the challenges of smishing detection due to lack of information and attack strategy available compared to phishing. The authors emphasized the need for models that targets low-resource languages such as Swahili, as most techniques focus on high-resource languages. The study's findings contributes knowledge on smishing detection, providing valuable resource for researchers and practitioners working on mobile money security in Sub-Saharan Africa. The model can potentially adapted to low-resource languages, which underscores the importance of developing specific models that considers the characteristics of each language and region. Further research can help explore the use of NLP techniques, and to improve the interpretability and explainability of the model's predictions, along with its transferability to other languages.
+
+A study by \cite{noah2022} aimed to combat phishing by creating an automated tool called PhisherCop. It leverages Natural Language Processing (NLP) techniques by effectively identifying phishing attempts in both email and text messages. To achieve this, researchers employed eight machine learning classifiers, including Stochastic Gradient Descent (SGD) and Support Vector Classifier (SVC), which outperforms other models in spam and detection accuracy in 96\%. \cite{noah2022} emphasizes the use of NLP in distinguishing between legitimate and malicious content, highlighting the use of rigorous data collection and pre-processing steps such as stop word removal, tokenization, stemming, and TF-IDF vectorization. The researchers emphasize the significance of PhisherCop as a web-based user-friendly tool for individuals and organizations based on the best performing machine learning models.
+
+A study by \cite{sathya2020} investigated phishing detection using the Random Forest Algorithm. Emphasizing the prevalence of phishing attacks and the need for reliable detection systems.  The authors highlighted the effectiveness of machine learning techniques, particularly the Random Forest algorithm. The proposed model achieves an accuracy of 97.14\% with a low false positive rate, outperforming the Fully Convolutional Neural Network. Detection performance improved with the volume of training data. The authors acknowledged limitations in research such specific use of data, and evolving phishing techniques. They suggested future research directions, including implementation of hybrid technologies combined with machine learning, and blacklist methods for enhanced phishing detection accuracy.
+
+Meanwhile, a study conducted by \cite{chaurasia2021} tackles the use of supervised learning for detecting SMS spam messages. The researchers have noticed that only few researches have been done to address the problem of smishing in their country, India. In the process of finding a solution, the researchers have selected various models to train their dataset with. The models they have used are: Support Vector Machine, Naive Bayes, Decision Tree, Random Forest, and Logistic Regression. Using Logistic Regression, results have shown that the model they have created is 77\% accurate. Making it the best model for detecting smishing messages. However, it is also mentioned by the researchers that there is more research to be done, as some fields are left unexplored, and the accuracy can be improved, as well as the minimization of numbers that decides features and factors.
+
+In another study by \cite{sethi2017}, effectiveness of various machine learning algorithms in detecting spam messages sent on mobile messages was explored. They aimed to identify strengths and weaknesses of these algorithms for the most suitable spam detection approach. The study utilized a public dataset, and created two datasets for testing and validation purposes, prioritizing accuracy of the detection. Two significant features were identified: message length and vectorizer matrix, where message length was used as an attribute quality metric, observing that spam messages having a mean length of 176 characters, while non-spam messages with only a mean length of 55. The key findings of this study reveals that different machine learning algorithms performed differently in classifying spam messages based on features used. They employed Naïve Bayes, Random Forest, and Logistic Regression algorithms, incorporating features such as message length and information gain matrix, enhancing classification accuracy. Naïve Bayes outperformed the other algorithms, achieving 98.445\% in identifying spam messages. Suggesting that Naïve Bayes is the algorithm to look out for in SMS spam detection due to its high accuracy, and relatively low running time.
+
+A novel URL detection called LURL was a study conducted by \cite{dutta2021}. Comparing with existing URL detectors such as \cite{le2018} and \cite{hong2021}, revealing LURL's superior performance across various metrics. During its training phase, LURL exhibited higher learning rates, covering 94.3\% of data with a rate of 5.0. LURL also outperformed in the accuracy department, averaging 97.4\% and 96.8\% for Phishtank and Crawler datasets, respectively. Precision and recall analysis, represented by the F1-score, consistently positioned LURL as the most effective method, demonstrating its ability to balance true positives and negatives. The computational efficiency of LURL is highlighted by achieving competitive F1-scores within a reasonable time frame, with 4.62 seconds for Phishtank. The paper attributes the success of LURL to the advantageous capabilities of LSTM memory. LURL emerges as a promising URL detection method, showcasing enhanced learning rates, accuracy, and precision. The authors concluded that LURL was a superior URL detector that could identify malicious and legitimate websites effectively.
+
+\subsection*{Synthesis}
+
+As indicated by existing studies, diverse approaches are employed in the detection of smishing messages. It's crucial to acknowledge that no single machine learning model universally outperforms all others, as different models demonstrate excellence in distinct tasks. This underscores the significance of selecting the most suitable approach tailored to a specific problem. The current literature predominantly relies on techniques such as TF-IDF and linguistic complexity features extracted from text. While effective on standard English datasets, these methods may not seamlessly transfer to low-resource languages like Philippine textism, which exhibit unique linguistic properties. Moreover, there is no one-size-fits-all solution; the effectiveness of an approach hinges on how well the selected features and model align with the particular dataset and use case.
+
+In the context of addressing research gaps, studies have not sufficiently addressed smishing detection for the Philippine language context. Progress has been made with English language smishing detection, but current models are mostly trained on standard English datasets, with a notable lack of Philippine-origin data. This is concerning given rising mobile and text fraud incidents in the Philippines—a tailored detection approach could provide needed protection for vulnerable populations.
+
+The recent addition of a Filipino smishing dataset from Bwandowando \cite{bwandowando2023} to Kaggle presents an opportunity. However, few if any studies have utilized this dataset to date. Our study aims to address this gap by using the recently added dataset and taking a novel approach—rather than relying on linguistic complexity, we will perform manual feature extraction to allow our model to learn deeper semantics related to smishing. The goal here is to identify meaningful semantic indicators that could distinguish smishing messages from benign ones. This requires careful focus on discriminating patterns rather than broader statistical relationships.
+
+Once insightful features are crafted to represent smishing semantics, we need an effective yet simple model to learn the key differences. SVMs are particularly well-suited for this goal \cite{noah2022}\cite{torabi2015}, as they excel when data is cleanly presented as descriptive features. Despite their simplicity, SVMs make highly generalizable classifications based on the most informative inputs. So while recent studies utilize deep learning and other classification methods, SVMs remain a robust foundation given our decision to pursue manual feature engineering.
+
+\section{Methodology}
+
+% \subsection*{Conceptual Framework}
+
+% The study will utilize the process framework shown in Figure \ref{fig:methodology} to guide the research process. The framework starts by processing the SMS dataset and extracting the key features. Next, model development and training are performed, where the model is an SVM and will be trained and tested using the extracted features. The model is then evaluated and compared with Logistic Regression based on key metrics such as accuracy, precision, recall, f1 score, and ROC-AUC. To improve the model's performance, hyperparameter tuning is performed to identify the optimal parameters. The following subsections provide a detailed description of each phase.
+
+% \begin{figure}[htbp]
+%     \centering
+%     \includegraphics[width=\columnwidth]{model-design-latest.drawio.png}
+%     \caption{Process Framework of the Study}
+%     \label{fig:methodology}
+% \end{figure}
+
+\subsection*{Data and Assumptions}
+
+The dataset used in the study comprises two primary fields: the target binary variable demonstrating whether a message is categorized as smishing, denoted as \texttt{is\_smishing}, and the raw SMS text. Since the model to be used is a supervised learning model, the dataset must be labeled and therefore features are extracted from the raw SMS text. The dataset is a comprehensive compilation from various sources, including a Kaggle dataset, contributions from \cite{mishra2022}, and researchers' personal SMS data. Existing datasets used are enumerated as follows:
+\begin{enumerate}
+    \item SMS Philippines Dataset from \cite{bwandowando2023}
+    \item SMS Spam Dataset from \cite{mishra2022}
+\end{enumerate}
+
+For this study, we modified the \cite{mishra2022} datasets by consolidating the original classes, 'spam' and 'smishing,' into a single class referred to as 'smishing.' This decision was made to ensure uniformity and simplicity in target variable representation. The consolidation simplifies the target variable into distinct binary classes, facilitating a focused exploration of smishing detection features and patterns. While this approach may lead to a potential loss of information and nuances present in the original classes, the researchers deemed it necessary for the specific objectives of this study. It is important to note that the terms 'spam' and 'smishing' are used interchangeably to denote the consolidated class. Future researchers can access the modified dataset and the Python notebook on \href{https://github.com/bxavace/modesim_paper/tree/main}{Github}. This consolidation allows for a streamlined analysis, and we acknowledge the trade-off between simplicity and potential information loss in our dataset modification process.
+
+As such, the raw text is processed so that the following features are extracted and fed to the supervised learning model. Most features were adopted from the study of \cite{mishra2022} and \cite{manyumwa2020}, while others were added to enhance the model's performance. The following feature variables were extracted from the raw SMS text: 
+
+\begin{enumerate}
+    \item \textbf{message\_length.} The length of the message in characters may impact the likelihood of a message being smishing.
+    \item \textbf{word\_count.} Similarly, the number of words in the message provides additional insights into the structure and complexity of the text.
+    \item \textbf{punctuation\_count.} The frequency of punctuation marks can contribute to distinguishing between legitimate and suspicious messages, as certain types of phishing messages may exhibit distinct punctuation patterns.
+    \item \textbf{upper\_count.} Unusual capitalization patterns, such as excessive uppercase usage, might be indicative of smishing attempts.
+    \item \textbf{digit\_count.} Phishing messages often contain digits, especially in the context of phone numbers or malicious links.
+    \item \textbf{special\_char\_count.} Scam texts are often characterized by the presence of special characters, such as exclamation points, dollar signs, and hashtags.
+    \item \textbf{has\_url.} Identifying messages with URLs assists in flagging potential threats, especially since most smishing URLs lead to malicious sites.
+    \item \textbf{has\_email.} Similarly, messages with email addresses may indicate smishing attempts.
+    \item \textbf{has\_phone.} Messages with phone numbers may also be indicative of smishing attempts.
+    \item \textbf{has\_currency.} Inclusion of currency symbols might signify financial scams or fraudulent activities.
+    \item \textbf{has\_smishing\_words.} Certain words or phrases may be indicative of smishing attempts, such as "Your account has been suspended" or "You have won a prize".
+    \item \textbf{entropy.} Shannon entropy measures the uncertainty in a random variable, and it can be used to detect phishing messages by identifying deviations from the expected patterns of legitimate texts.
+\end{enumerate}
+
+% \begin{enumerate}
+%     \item \texttt{message\_length}. The length of the message in characters may impact the likelihood of a message being smishing.
+%     \item \texttt{word\_count}. Similarly, the number of words in the message provides additional insights into the structure and complexity of the text.
+%     \item \texttt{punctuation\_count}. The frequency of punctuation marks can contribute to distinguishing between legitimate and suspicious messages, as certain types of phishing messages may exhibit distinct punctuation patterns.
+%     \item \texttt{upper\_count}. Unusual capitalization patterns, such as excessive uppercase usage, might be indicative of smishing attempts.
+%     \item \texttt{digit\_count}. Phishing messages often contain digits, especially in the context of phone numbers or malicious links.
+%     \item \texttt{special\_char\_count}. Scam texts are often characterized by the presence of special characters, such as exclamation points, dollar signs, and hashtags.
+%     \item \texttt{has\_url}. Identifying messages with URLs assists in flagging potential threats especially since most smishing URLs lead to malicious sites.
+%     \item \texttt{has\_email}. Similarly, messages with email addresses may indicate smishing attempts.
+%     \item \texttt{has\_phone}. Messages with phone numbers may also be indicative of smishing attempts.
+%     \item \texttt{has\_currency}. Inclusion of currency symbols might signify financial scams or fraudulent activities.
+%     \item \texttt{has\_smishing\_words}. Certain words or phrases may be indicative of smishing attempts, such as "Your account has been suspended" or "You have won a prize".
+%     \item \texttt{entropy}. Shannon entropy measures the uncertainty in a random variable, and it can be used to detect phishing messages by identifying deviations from the expected patterns of legitimate texts.
+% \end{enumerate}
+
+% \begin{table}[htbp]
+%     \caption{Features Selected}
+%     \label{tab:features}
+%     \begin{tabular}{|l|p{6cm}|}
+%         \hline
+%         \textbf{Feature} & \textbf{Description} \\
+%         \hline
+%         message\_length & The length of the message in characters may impact the likelihood of a message being smishing. \\
+%         \hline
+%         word\_count & Number of words providing insights into text structure and complexity. \\
+%         \hline
+%         punctuation\_count & Frequency of punctuation marks distinguishing legitimate and suspicious messages. \\
+%         \hline
+%         upper\_count & Unusual capitalization patterns indicative of smishing attempts. \\
+%         \hline
+%         digit\_count & Presence of digits, especially in phone numbers or malicious links. \\
+%         \hline
+%         special\_char\_count & Scam texts characterized by special characters like exclamation points, dollar signs. \\
+%         \hline
+%         has\_url & Identification of messages with URLs flagging potential threats. \\
+%         \hline
+%         has\_email & Messages with email addresses indicating smishing attempts. \\
+%         \hline
+%         has\_phone & Messages with phone numbers indicative of smishing attempts. \\
+%         \hline
+%         has\_currency & Inclusion of currency symbols signifying financial scams. \\
+%         \hline
+%         has\_smishing\_words & Words/phrases indicative of smishing attempts (e.g., "Your account suspended"). \\
+%         \hline
+%         entropy & Shannon entropy measuring uncertainty for detecting phishing messages. \\
+%         \hline
+%     \end{tabular}
+% \end{table}
+    
+
+These features collectively enhance the model's ability to discern smishing content based on linguistic and structural attributes. The researchers' Kaggle and GitHub repository show the modified dataset and the approach done in extracting the features enumerated above. The following libraries in Python were used to extract the features enumerated above:
+
+\begin{table}[htbp]
+    \centering
+    \caption{Python Libraries Used}
+    \label{tab:python_libraries}
+    \begin{tabular}{|c|c|}
+        \hline
+        \textbf{Library} & \textbf{Description} \\
+        \hline
+        pandas & Data manipulation library \\
+        \hline
+        string & String manipulation library \\
+        \hline
+        math & Mathematical functions library \\
+        \hline
+        re & Regular expression library \\
+        \hline
+        nltk & Natural language processing library \\
+        \hline
+        phone-numbers & Phone number parsing library \\
+        \hline
+    \end{tabular}
+\end{table}
+
+
+\subsection*{Model Design}
+In this study, we focus on employing Support Vector Machines (SVM) from the scikit-learn library as the primary model. Additionally, Logistic Regression from the same library is used for comparative analysis, evaluating key metrics such as accuracy, precision, recall, and f1 score.
+
+SVM, a powerful supervised learning model belonging to the kernel methods subbranch, was developed in the 1990s. SVMs were developed to address the non-linear class boundaries in which the maximal margin classifer fails to find a decision boundary \cite{james2013}\cite{geron2019}. Renowned for its efficacy in handling spam-related issues, SVMs have demonstrated high accuracy and efficiency in Torabi's \cite{torabi2015} comprehensive review on spam detection. The study emphasizes the significance of selecting optimal parameters, including the cost parameter (C) and kernel function, for SVM to achieve peak performance. The study concludes that SVMs are a powerful tool for spam detection and have demonstrated high accuracy and efficiency in classifying spam from legitimate text messages. 
+
+SVM is a versatile tool for binary classification tasks, finding optimal hyperplanes with maximal margin to separate classes. The method's generalization to non-linear class boundaries makes it suitable for various classification tasks, including phishing detection. Its robustness to noise and outliers, coupled with the ability to map inputs into high-dimensional feature spaces using kernels, positions SVM as an ideal candidate for discerning complex patterns in phishing text, accommodating noise, typos, and inconsistencies commonly found in SMS messages.
+
+Extracting features such as text entropy, phone numbers, currencies, and URLs from raw SMS text, where many of which exhibit non-linear relationships, we leverage SVM's kernel methods to effectively model non-linear relationships and interactions for classification. SVM's demonstrated generalization performance is crucial for SMS phishing detection, enabling accurate identification of new phishing attempts that may evolve over time.
+
+\subsection*{Model Implementation}
+
+To ensure that the model is reproducible and consistent, we initially preprocessed the data from the raw dataset. The size of the data set is 6303. The dataset is then divided into 3 parts: training set, validation set, and testing set. 60\% (3781) of the dataset will go to the training set, and the remaining will be equally distributed to validation (1261) and testing sets (1261). We write the newly separated datasets out to CSV files to ensure consistency.
+
+The support vector machine and logistic regression models are available to use from scikit-learn library. The models are developed via Visual Studio Code - Jupyter Notebook, using Python 3.10 as its kernel. Using SVC() and LogisticRegression class from the sklearn library, we fit the model using the training set, default parameters, and the 3 commonly used kernels: linear, radial basis function, and polynomial kernels.
+
+\subsection*{Model Validation and Verification}
+
+\begin{table}[htbp]
+    \small
+    \centering
+    \caption{Validation Set Results}
+    \label{tab:svm-logreg-comparison}
+    \begin{tabular}{lcccc}
+      \toprule
+      \textbf{Model} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F-1 Score}\\
+      \midrule
+      SVM (RBF) & 94.77\% & \textbf{97.32\%} & 81.15\% & 88.50\% \\
+      SVM (Poly) & 94.21\% & 95.45\% & 80.51\% & 87.35\% \\
+      SVM (Linear) & \textbf{97.30\%} & 96.66\% & \textbf{92.33\%} & \textbf{94.44\%} \\
+      LR & 96.91\% & 96.60\% & 90.73\% & 93.57\% \\
+      \bottomrule
+    \end{tabular}
+\end{table}
+
+Afterwards, we trained the two models using the training set that was derived earlier. Then, we validated the fitted models using the validation set. Using the default values and parameters, \ref{tab:svm-logreg-comparison} highlights the accuracy, precision, recall, and f1 scores of the two base models. From \ref{tab:svm-logreg-comparison}, we notice that base SVC with the linear kernel outperforms most of the other model configurations as well as logistic regression in terms of its accuracy (97.30), recall (92.33), and F1 score (94.44). With this, we choose linear kernel to optimize for hyperparameter tuning of the SVM.
+
+\subsection*{Model Analysis}
+% A description and demonstration of the optimization methods and results for the simulation model and its parameters
+
+Table \ref{tab:hyperparameters} highlights the hyperparameter tuning of the SVM. The hyperparameter tuning is done using the GridSearchCV method with 5-fold cross validation from the scikit-learn library. We choose linear kernel and C as the hyperparameters to be tuned.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Hyperparameter Tuning for SVM}
+    \label{tab:hyperparameters}
+    \begin{tabular}{lccc}
+      \toprule
+      \textbf{Hyperparameter} & \textbf{Values} \\
+      \midrule
+      Kernel & Linear \\
+      C & 0.1, 1, 10, 100 \\
+      \bottomrule
+    \end{tabular}
+\end{table}
+
+From the cross-validation results, we proceed with the base hyperparameters (C=1, kernel="linear") since the cost parameter (C) at \ref{tab:hyperparameters} had minimal impact on the performance of the linear kernel. The hyperparameters C=1 and kernel="linear" are then used to evaluate the model using the testing set.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Evaluation Results (Test Set) of the Tuned SVC}
+    \label{tab:testset}
+    \begin{tabular}{lcccc}
+        \toprule
+        \textbf{Model} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F-1 Score}\\
+        \midrule
+        SVM & 97.46\% & 96.44\% & 92.49\% & 94.43\% \\
+        \bottomrule
+      \end{tabular}
+\end{table}
+
+Table \ref{tab:testset} shows the test set results from the selected and tuned SVC model. The model's performance is consistent with the validation set results, demonstrating the model's robustness and generalization to new and unseen data.
+
+\subsection*{Conclusion and Recommendations}
+% A summary of the main findings and recommendations from the simulation model and its results
+
+Using simple extraction methods of key structural components of the SMS text, we were able to develop a model that can effectively detect smishing messages. The model's performance was evaluated using the validation and testing sets, demonstrating high accuracy, precision, recall, and F1 score. The model's simplicity and effectiveness make it a valuable tool for detecting smishing messages, providing a reliable defense against fraudulent activities and protecting smartphone users from potential threats.
+
+The key linguistic and structural features that we extracted based on past literatures are enumerated as follows: message length, word count, punctuation count, upper count, digit count, special character count, has URL, has email, has phone, has currency, has smishing words, and entropy. In here, we recommend for the future researchers to use feature selection methods to identify the most important features for smishing detection. This will help in reducing the dimensionality of the dataset and improving the model's performance.
+
+In terms of the effectiveness of the two models in terms of its performance, The SVM, specifically configured with a linear kernel, achieved an impressive accuracy of 97.30\%, precision of 96.66\%, recall of 92.33\%, and an F1 score of 94.44\%. On the other hand, Logistic Regression demonstrated slightly lower but still performative results with an accuracy of 96.91\%, precision of 96.60\%, recall of 90.73\%, and an F1 score of 93.57\%. While the SVM marginally outperforms Logistic Regression across all metrics, the nuanced differences suggest that both models are effective in detecting smishing messages.
+
+We also compared the three kernel functions in terms of its key performances (accuracy, precision, recall, and f1-score.) The results from \ref{tab:svm-logreg-comparison} suggest that the choice of kernel significantly impacts SVM performance, with the linear kernel outperforming both the default and polynomial configurations.
+
+Finally, when we tuned the hyperparameters of the SVM, we found that the base hyperparameters (C=1, kernel="linear") were optimal for the model's performance. The accuracy is only slightly improved from the base model, but the precision, recall, and F1 score are consistent with the base model's performance. This suggests that the base hyperparameters are already optimal for the model's performance. In the end, the tuned SVM model achieved an accuracy of 97.46\%, precision of 96.44\%, recall of 92.49\%, and an F1 score of 94.43\%.
+
+
+\begin{thebibliography}{00}
+    % \bibitem{i1} E. Bowen, “What is SMS? Complete Guide to Short Message Service,” Telnyx, Jan. 04, 2021. https://telnyx.com/resources/what-is-sms
+    % \bibitem{i4} ``SMS Statistics in the Philippines'', Semaphore, Jul. 24, 2023. https://blog.semaphore.co/2023/07/24/sms-statistics-philippines/ 
+
+    \bibitem{cudis2021} C. Cudis, ``Public warned of increasing financial cybercrimes amid pandemic,'' Philippine News Agency, https://www.pna.gov.ph/articles/1133961 (accessed Jan. 21, 2024). 
+
+    \bibitem{villanueva2023} M. Villanueva, ``Scam-demic,'' Philstar. https://www.philstar.com/opinion/2023/09/22/2298068/scam-demic (accessed Jan. 21, 2024).
+
+    \bibitem{statista2023} Statista Research Department, ``Philippines: Most frequent consumer fraud schemes 2023, ''Statista, \url{https://www.statista.com/statistics/1271755/philippines-most-frequent-consumer-fraud-schemes/} (accessed Jan. 21, 2024). 
+
+    \bibitem{stojnic2021}
+    T. Stojnic, D. Vatsalan, and N. Arachchilage, "Phishing email strategies: Understanding cybercriminals' strategies of crafting phishing emails," Security and Privacy, vol. 4, pp. -, 05 2021. doi: 10.1002/spy2.165
+
+    \bibitem{lisette2023}
+    C. Lisette and M. Castillo, “EXECUTIVE POLICY BRIEF Towards a Cyber Defense Strategy in the Philippines,” 2023. Accessed: Mar. 07, 2024. [Online]. Available: https://ndcp.edu.ph/wp-content/uploads/2023/07/EPB-2023-03-Towards-a-Cyber-Defense-Strategy-in-the-Philippines.pdf
+
+    \bibitem{mishra2020}
+    S. Mishra and D. Soni, "Smishing Detector: A security model to detect smishing through SMS content analysis and URL behavior analysis," Future Generation Computer Systems, vol. 108, pp. 803-815, 2020. doi: 10.1016/j.future.2020.03.021.
+
+    \bibitem{mazri2023} M. SIF-EDDINE and T. MAZRI, ``Detecting smishing attacks on smartphones: a comparative study between supervised and unsupervised learning techniques,'' Aug. 2023, doi: https://doi.org/10.21203/rs.3.rs-3289212/v1.
+
+    \bibitem{alqahtani2022} 
+    A. F. Al-Qahtani and S. Cresci, 
+    ``The COVID-19 scamdemic: A survey of phishing attacks and their countermeasures during COVID-19,'' 
+    \emph{IET Information Security}, vol. 16, no. 5, Jul. 2022, doi: \url{https://doi.org/10.1049/ise2.12073}.
+    
+    \bibitem{mishra2021} 
+    S. Mishra and D. Soni, 
+    ``DSmishSMS-A System to Detect Smishing SMS,'' 
+    \emph{Neural Computing and Applications}, vol. 35, no. 7, Jul. 2021, doi: \url{https://doi.org/10.1007/s00521-021-06305-y}.
+    
+    \bibitem{bwandowando2023}
+    BwandoWando,
+    ``Philippine Spam/Scam SMS,''
+    Kaggle,
+    \url{https://www.kaggle.com/ds/2846506},
+    doi: \url{https://doi.org/10.34740/KAGGLE/DS/2846506},
+    2023.
+    
+    \bibitem{mishra2022}
+    Sandhya Mishra and Devpriya Soni,
+    ``SMS Phishing Dataset for Machine Learning and Pattern Recognition,''
+    Mendeley Data, V1,
+    doi: \url{https://doi.org/10.17632/f45bkkt8pr.1},
+    2022.
+
+    \bibitem{mambina2022} 
+    I. S. Mambina, J. D. Ndibwile, and K. F. Michael, 
+    ``Classifying Swahili Smishing Attacks for Mobile Money Users: A Machine-Learning Approach,'' 
+    \emph{IEEE Access}, vol. 10, pp. 83061-83074, 2022, doi: \url{https://doi.org/10.1109/access.2022.3196464}.
+    
+    \bibitem{noah2022} 
+    N. Noah, A. Tayachew, S. Ryan, and S. Das, 
+    ``PhisherCop: Developing an NLP-Based Automated Tool for Phishing Detection,'' 
+    \emph{Proceedings of the Human Factors and Ergonomics Society Annual Meeting}, vol. 66, no. 1, pp. 2093–2097, Sep. 2022, doi: \url{https://doi.org/10.1177/1071181322661060}.
+
+    \bibitem{sathya2020} R. Sathya, U. Kiran, J. Chowdary, B. Kasi, Kumar Reddy, and Student, 
+    ``Detection of Phishing Attacks using Random Forest Algorithm,'' 
+    \emph{International Journal of Recent Technology and Engineering (IJRTI)}, 
+    vol. 8, no. 4, pp. 6483-6490, Jan. 2020, ISSN: 2456-3315.
+    
+    % \bibitem{ignacio2021} 
+    % A. T. Ignacio and F. S. D. Jesus, 
+    % ``Texting and Chatting Styles of Grade 11 Students: A Case in the Philippines,'' 
+    % \emph{International Journal of English Literature and Social Sciences}, vol. 6, no. 4, pp. 096-109, 2021, doi: \url{https://doi.org/10.22161/ijels.64.16}.
+
+    % \bibitem{domingo2021} 
+    % M. J. A. Domingo and M. L. Lino, 
+    % ``Emerging Language in Facebook Threads of College Students,'' 
+    % \emph{TESOL International Journal}, 130, 2021.
+
+    % \bibitem{caparas2017} 
+    % P. Caparas and L. Gustilo, 
+    % ``Communicative Aspects of Multilingual Code Switching in Computer-Mediated Communication,'' 
+    % \emph{Indonesian Journal of Applied Linguistics}, vol. 7, no. 2, pp. 349-359, 2017.
+
+    % \bibitem{chen2023} 
+    % B. Chen, Z. Zhang, N. Langrené, and S. Zhu, 
+    % ``Unleashing the Potential of Prompt Engineering in Large Language Models: A Comprehensive Review,'' 
+    % \emph{arXiv preprint arXiv:2310.14735}, 2023. \url{https://arxiv.org/abs/2310.14735}
+
+    \bibitem{chaurasia2021} 
+    N. Chaurasia, P. Bharali, and R. Naresh, 
+    ``SMS Spam Detection using Supervised Learning,'' 
+    \emph{Turkish Journal of Computer and Mathematics Education}, vol. 12, no. 11, pp. 3454-3461, May 10, 2021.
+
+    \bibitem{sethi2017}
+    P. Sethi, V. Bhandari, and B. Kohli, "SMS spam detection and comparison of various machine learning algorithms," in \emph{2017 International Conference on Computing and Communication Technologies for Smart Nation (IC3TSN)}, 2017, pp. 28-31. Available: \url{https://api.semanticscholar.org/CorpusID:46774480}
+
+    \bibitem{dutta2021} 
+    A. K. Dutta, 
+    ``Detecting Phishing Websites using Machine Learning Technique,'' 
+    \emph{PLoS One}, Oct 11, 2021, vol. 16, no. 10, e0258361, doi: \url{https://doi.org/10.1371/journal.pone.0258361}, PMID: 34634081, PMCID: PMC8504731.
+
+    \bibitem{hong2021} 
+    J. Hong, T. Kim, J. Liu, N. Park, S.W. Kim, 
+    ``Phishing URL Detection with Lexical Features and Blacklisted Domains,'' 
+    \emph{Autonomous Secure Cyber Systems}, Springer, 10.1007/978-3-030-33432-1\_12.
+
+    \bibitem{le2018}
+    H. Le, Q. Pham, D. Sahoo, and S. C. H. Hoi,
+    ``URLNet: Learning a URL Representation with Deep Learning for Malicious URL Detection,''
+    \emph{CoRR},
+    vol. abs/1802.03162,
+    2018,
+    \url{http://arxiv.org/abs/1802.03162}.
+
+    % \bibitem{veselovsky2023}
+    % V. Veselovsky, M. H. Ribeiro, A. Arora, M. Josifoski, A. Anderson, R. West,
+    % ``Generating Faithful Synthetic Data with Large Language Models: A Case Study in Computational Social Science,''
+    % \emph{arXiv preprint}, 
+    % \url{https://arxiv.org/abs/2305.15041},
+    % 2023.
+    
+    \bibitem{manyumwa2020}
+    T. Manyumwa, P. F. Chapita, H. Wu, S. Ji,
+    ``Towards Fighting Cybercrime: Malicious URL Attack Type Detection using Multiclass Classification,''
+    In \emph{2020 IEEE International Conference on Big Data (Big Data)},
+    pp. 1813-1822,
+    doi: \url{https://doi.org/10.1109/BigData50022.2020.9378029},
+    2020.
+
+    \bibitem{james2013}
+    G. James, D. Witten, T. Hastie, and R. Tibshirani, \emph{An Introduction to Statistical Learning: with Applications in R}. New York: Springer, 2013.
+
+    \bibitem{geron2019}
+    A. Géron, \emph{Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow: Concepts, Tools, and Techniques to Build Intelligent Systems}, 2nd ed. O'Reilly, 2019.
+    
+    \bibitem{torabi2015}
+    Z. Torabi, M. H. Nadimi-Shahraki, and A. Nabiollahi, "Efficient Support Vector Machines for Spam Detection: A Survey," \emph{(IJCSIS) International Journal of Computer Science and Information Security}, vol. 13, no. 1, January 2015.
+
+    \bibitem{thakur2023}
+    K. Thakur, M. L. Ali, M. A. Obaidat, and A. Kamruzzaman, “A Systematic Review on Deep-Learning-Based Phishing Email Detection,” \emph{Electronics}, vol. 12, no. 21, p. 4545, Jan. 2023, doi: https://doi.org/10.3390/electronics12214545.
+
+    % \bibitem{dauber2023}
+    % E. Dauber and S. Dendekuri,
+    % ``Data Generation for NLP Classification Dataset Augmentation: Using Existing LLMs to Improve Dataset Quality,''
+    % \emph{Stanford CS224N Custom Project},
+    % Department of Computer Science, Stanford University,
+    % \url{dauber23@stanford.edu}, \url{sahit@stanford.edu},
+    % 2023.
+\end{thebibliography}
+\vspace{12pt}
+
+\end{document}
